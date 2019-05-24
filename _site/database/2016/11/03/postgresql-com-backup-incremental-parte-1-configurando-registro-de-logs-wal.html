@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Olá Mundo</title>
-  <meta name="description" content="You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different wa...">
+  <title>Postgresql com Backup Incremental — parte 1 — Configurando o registro de Logs (Wal)</title>
+  <meta name="description" content="">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://mayronceccon.github.io/jekyll/update/2015/09/22/primeiro-post.html">
+  <link rel="canonical" href="http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html">
   <link rel="alternate" type="application/rss+xml" title="Mayron Ceccon" href="http://mayronceccon.github.io/feed.xml" />
 </head>
 
@@ -56,25 +56,53 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Olá Mundo</h1>
-    <p class="post-meta">Sep 22, 2015</p>
+    <h1 class="post-title">Postgresql com Backup Incremental — parte 1 — Configurando o registro de Logs (Wal)</h1>
+    <p class="post-meta">Nov 3, 2016</p>
   </header>
 
   <article class="post-content">
-    <p>You’ll find this post in your <code class="highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
+    
+<p>Para realizar o backup incremental do Postgresql, utilizaremos o “Continuous Archiving”, está técnica permite utilizar o PITR <a href="https://en.wikipedia.org/wiki/Point-in-time_recovery">(Point-in-Time Recovery)</a>, onde assim é possível realizar a cópia do WAL <a href="https://en.wikipedia.org/wiki/Write-ahead_logging">(Write Ahead Log)</a> do PostgreSQL e utilizar estes logs para atualização de uma base de dados.</p>
 
-<p>To add new posts, simply add a file in the <code class="highlighter-rouge">_posts</code> directory that follows the convention <code class="highlighter-rouge">YYYY-MM-DD-name-of-post.ext</code> and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.</p>
+<p>Para este tutorial estou utilizando o SO Ubuntu 14.04.</p>
 
-<p>Jekyll also offers powerful support for code snippets:</p>
+<p>Primeiramente devemos alterar o arquivo <strong>postgresql.conf</strong>, adicionando os comandos abaixo:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-  <span class="nb">puts</span> <span class="s2">"Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
-<span class="k">end</span>
-<span class="n">print_hi</span><span class="p">(</span><span class="s1">'Tom'</span><span class="p">)</span>
-<span class="c1">#=&gt; prints 'Hi, Tom' to STDOUT.</span></code></pre></figure>
+<div class="highlighter-rouge"><pre class="highlight"><code>wal_level = hot_standby
+archive_mode = on
+archive_command = 'test ! -f /var/lib/postgresql/pg_log_archive/%f &amp;&amp; cp %p /var/lib/postgresql/pg_log_archive/%f'
+max_wal_senders = 2
+</code></pre>
+</div>
 
-<p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://github.com/jekyll/jekyll-help">Jekyll’s dedicated Help repository</a>.</p>
+<p>Após as modificações acima, devemos criar a pasta onde os logs serão salvos e dar permissão ao postgres para acesso da pasta.</p>
 
+<div class="highlighter-rouge"><pre class="highlight"><code>mkdir /var/lib/postgresql/pg_log_archive 
+chown -R postgres.postgres /var/lib/postgresql/pg_log_archive
+chmod 700 /var/lib/postgresql/pg_log_archive/
+</code></pre>
+</div>
+
+<p>Agora criaremos um usuário com privilégio de replicação:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>su - postgres
+psql -c "CREATE ROLE user_replication REPLICATION LOGIN PASSWORD '123';"
+</code></pre>
+</div>
+
+<p>Após a criação do usuário “user_replication” devemos alterar o <strong>pg_hba.conf</strong>, adicionando a regra abaixo, assim, habilitando e permitindo a conexão para a replicação.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>host replication user_replication 127.0.0.1/32 trust
+</code></pre>
+</div>
+
+<p>Após as configurações, devemos fazer o restart do Postgresql.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/etc/init.d/postgresql restart
+</code></pre>
+</div>
+
+<p>Agora seu servidor já esta configurado com o Continuous Archiving.</p>
 
   </article>
 
