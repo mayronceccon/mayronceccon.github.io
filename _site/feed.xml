@@ -3,11 +3,47 @@
   <channel>
     <title>Mayron Ceccon</title>
     <description></description>
-    <link>http://mayronceccon.github.io/</link>
-    <atom:link href="http://mayronceccon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 25 May 2019 18:46:33 -0300</pubDate>
-    <lastBuildDate>Sat, 25 May 2019 18:46:33 -0300</lastBuildDate>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 25 May 2019 18:51:01 -0300</pubDate>
+    <lastBuildDate>Sat, 25 May 2019 18:51:01 -0300</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Postgresql com Backup Incremental — parte 3 — Fazendo a limpeza de logs (pg_archivecleanup)</title>
+        <description>&lt;p&gt;Para a limpeza dos logs antigos usaremos o comando pg_archivecleanup.&lt;/p&gt;
+
+&lt;p&gt;O pg_archivecleanup foi projetado para ser utilizado no archive_cleanup_command, após o recovery de um banco secundário. Mas como não estamos trabalhando com replicação, utilizamos de outra forma este comando, para facilitar criei um arquivo bash, onde verifico o último arquivo “.backup” da pasta de logs, e faço a exclusão a partir dele.&lt;/p&gt;
+
+&lt;p&gt;Os arquivos .backup contém os dados referentes aos processos do pg_basebackup, informando quais são os logs anteriores a execução.&lt;/p&gt;
+
+&lt;p&gt;O arquivo bash ficou com as seguintes linhas de comando:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;DIR_LOGS='/var/lib/postgresql/pg_log_archive'
+LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
+/usr/lib/postgresql/9.3/bin/pg_archivecleanup &quot;${DIR_LOGS}&quot; &quot;${LAST_LOG}&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;onde,&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;DIR_LOGS&lt;/strong&gt; é o local onde os logs (Wal) estão sendo gravados, e o &lt;strong&gt;LAST_LOG&lt;/strong&gt; é o último arquivo .backup salvo, após o processo de pg_basebackup.&lt;/p&gt;
+
+&lt;p&gt;Ao executar o pg_archivecleanup, somente os logs (Wal), posteriores ao último basebackup continuam na pasta, com isso evitamos o acumulo de logs.&lt;/p&gt;
+
+&lt;p&gt;Em um banco onde se tem muitas transações, sem o devido cuidado com a exclusão dos logs, podemos ficar sem espaço em disco em pouco tempo, por isso é de grande importância esta rotina.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 17 Nov 2016 08:10:00 -0200</pubDate>
+        <link>http://localhost:4000/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</link>
+        <guid isPermaLink="true">http://localhost:4000/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</guid>
+        
+        <category>postgresql</category>
+        
+        <category>backup</category>
+        
+        
+        <category>database</category>
+        
+      </item>
     
       <item>
         <title>Postgresql com Backup Incremental — parte 2 — Fazendo backup do sistema de arquivos (pg_basebackup)</title>
@@ -25,8 +61,8 @@
 &lt;p&gt;Após a execução e conclusão, você pode verificar que foi criada uma pasta chamada backup a partir do diretório onde você executou o comando e dentro desta o arquivo base.tar.gz.&lt;/p&gt;
 </description>
         <pubDate>Tue, 15 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://mayronceccon.github.io/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</link>
-        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</guid>
+        <link>http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</link>
+        <guid isPermaLink="true">http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</guid>
         
         <category>postgresql</category>
         
@@ -78,8 +114,8 @@ psql -c &quot;CREATE ROLE user_replication REPLICATION LOGIN PASSWORD '123';&quo
 &lt;p&gt;Agora seu servidor já esta configurado com o Continuous Archiving.&lt;/p&gt;
 </description>
         <pubDate>Thu, 03 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</link>
-        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</guid>
+        <link>http://localhost:4000/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</link>
+        <guid isPermaLink="true">http://localhost:4000/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</guid>
         
         <category>postgresql</category>
         

@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Postgresql com Backup Incremental — parte 2 — Fazendo backup do sistema de arquivos (pg_basebackup)</title>
-  <meta name="description" content="Continuando os procedimentos para realizar o Backup Incremental no Postgresql, neste post faremos o backup dos dados do servidor principal, onde este backup ...">
+  <title>Postgresql com Backup Incremental — parte 3 — Fazendo a limpeza de logs (pg_archivecleanup)</title>
+  <meta name="description" content="Para a limpeza dos logs antigos usaremos o comando pg_archivecleanup.">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html">
+  <link rel="canonical" href="http://localhost:4000/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html">
   <link rel="alternate" type="application/rss+xml" title="Mayron Ceccon" href="http://localhost:4000/feed.xml" />
 </head>
 
@@ -56,23 +56,31 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Postgresql com Backup Incremental — parte 2 — Fazendo backup do sistema de arquivos (pg_basebackup)</h1>
-    <p class="post-meta">Nov 15, 2016</p>
+    <h1 class="post-title">Postgresql com Backup Incremental — parte 3 — Fazendo a limpeza de logs (pg_archivecleanup)</h1>
+    <p class="post-meta">Nov 17, 2016</p>
   </header>
 
   <article class="post-content">
-    <p>Continuando os procedimentos para realizar o Backup Incremental no Postgresql, neste post faremos o backup dos dados do servidor principal, onde este backup será usado posteriormente para o restore.</p>
+    <p>Para a limpeza dos logs antigos usaremos o comando pg_archivecleanup.</p>
 
-<p>No servidor principal, vamos utilizar o comando <a href="https://www.postgresql.org/docs/9.2/app-pgbasebackup.html">pg_basebackup</a>, onde este comando faz o backup do cluster total do servidor principal, não sendo possível fazer o backup de somente um banco específico.</p>
+<p>O pg_archivecleanup foi projetado para ser utilizado no archive_cleanup_command, após o recovery de um banco secundário. Mas como não estamos trabalhando com replicação, utilizamos de outra forma este comando, para facilitar criei um arquivo bash, onde verifico o último arquivo “.backup” da pasta de logs, e faço a exclusão a partir dele.</p>
 
-<p>Executamos o comando abaixo:</p>
+<p>Os arquivos .backup contém os dados referentes aos processos do pg_basebackup, informando quais são os logs anteriores a execução.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pg_basebackup -h127.0.0.1 -U user_replication -D backup -Ft -z -P
+<p>O arquivo bash ficou com as seguintes linhas de comando:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DIR_LOGS='/var/lib/postgresql/pg_log_archive'
+LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
+/usr/lib/postgresql/9.3/bin/pg_archivecleanup "${DIR_LOGS}" "${LAST_LOG}"
 </code></pre></div></div>
 
-<p>os parâmetros utilizados pode sem verificados no site do <a href="https://www.postgresql.org/docs/9.2/app-pgbasebackup.html">Postgresql</a>.</p>
+<p>onde,</p>
 
-<p>Após a execução e conclusão, você pode verificar que foi criada uma pasta chamada backup a partir do diretório onde você executou o comando e dentro desta o arquivo base.tar.gz.</p>
+<p><strong>DIR_LOGS</strong> é o local onde os logs (Wal) estão sendo gravados, e o <strong>LAST_LOG</strong> é o último arquivo .backup salvo, após o processo de pg_basebackup.</p>
+
+<p>Ao executar o pg_archivecleanup, somente os logs (Wal), posteriores ao último basebackup continuam na pasta, com isso evitamos o acumulo de logs.</p>
+
+<p>Em um banco onde se tem muitas transações, sem o devido cuidado com a exclusão dos logs, podemos ficar sem espaço em disco em pouco tempo, por isso é de grande importância esta rotina.</p>
 
   </article>
 
