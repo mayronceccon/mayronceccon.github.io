@@ -5,9 +5,75 @@
     <description></description>
     <link>http://mayronceccon.github.io/</link>
     <atom:link href="http://mayronceccon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 25 May 2019 18:53:39 -0300</pubDate>
-    <lastBuildDate>Sat, 25 May 2019 18:53:39 -0300</lastBuildDate>
+    <pubDate>Sat, 25 May 2019 19:01:29 -0300</pubDate>
+    <lastBuildDate>Sat, 25 May 2019 19:01:29 -0300</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Postgresql com Backup Incremental — parte 4— Restore da base de dados</title>
+        <description>&lt;p&gt;Para esta etapa, devemos ter o Postgresql instalado na máquina onde o restore será feito.&lt;/p&gt;
+
+&lt;p&gt;Devemos copiar o arquivo &lt;strong&gt;base.tar.gz&lt;/strong&gt; criado a partir do comando pg_basebackup no servidor principal e os arquivos incrementais que estão sendo salvos na pasta &lt;strong&gt;/var/lib/postgresql/pg_log_archive&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;O aconselhável é sempre fazer a transferência destes arquivos para outro lugar, se ocorrer um problema físico na máquina principal, não será possível acessar estes arquivos e o backup não terá utilidade. Podemos utilizar scp, rsync, ou qualquer outro programa para a transferência.&lt;/p&gt;
+
+&lt;p&gt;Devemos parar o serviço do Postgresql da máquina onde será feito o restore.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql stop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Dentro da pasta &lt;strong&gt;/var/lib/pgsql&lt;/strong&gt; temos a pasta &lt;strong&gt;data&lt;/strong&gt;, esta pasta é onde encontramos os dados referentes ao Postgresql, como vamos fazer o restore do banco de outra máquina, devemos renomear a pasta data para tmp (ou qualquer outro nome)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mv /var/lib/pgsql/data /var/lib/pgsql/tmp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Agora vamos descompactar o arquivo de backup feito no servidor principal. Se as versões do Linux forem as mesmas, a pasta será criada diretamente dentro de /var/lib/pgsql, se atentar onde a pasta data será criada.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tar xvfP /var/lib/pgsql/base.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Ao listar as pastas, você verá que foi criada novamente a pasta data, onde está é a cópia do servidor principal.&lt;/p&gt;
+
+&lt;p&gt;Depois desta etapa devemos remover os logs antigos da pasta pg_xlog do arquivo descompactado, para evitar problemas com dados antigos&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rm -rf /var/lib/pgsql/data/pg_xlog/*.*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;No servidor master “Principal” temos os logs que ainda não foram salvos no arquivo incremental, estes logs estão dentro da pasta pg_xlog. Se não for possível recuperar estes logs, o restore de dados será feito somente a partir do último arquivo incremental.&lt;/p&gt;
+
+&lt;p&gt;Se for possível acessar o servidor principal então devemos copiar os arquivos da pasta pg_xlog, para a pasta pg_xlog do servidor onde será feito o restore.&lt;/p&gt;
+
+&lt;p&gt;Agora devemos criar um arquivo chamado recovery.conf dentro da pasta /var/lib/pgsql/data/, neste arquivo colocaremos a linha abaixo:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;restore_command = 'cp /var/lib/pgsql/pg_log_archive/%f %p'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Onde o caminho &lt;strong&gt;/var/lib/pgsql/pg_log_archive/&lt;/strong&gt; são os logs incrementais que buscamos do servidor principal.&lt;/p&gt;
+
+&lt;p&gt;Devemos também dar permissão ao postgres executar o arquivo&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chown postgres.postgres recovery.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Após estes passos devemos iniciar o Postgresql novamente, para a importação dos logs&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Com isso a rotina de backup e restore incremental esta concluída.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 03 Mar 2017 07:10:00 -0300</pubDate>
+        <link>http://mayronceccon.github.io/database/2017/03/03/restore-base-dados.html</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/database/2017/03/03/restore-base-dados.html</guid>
+        
+        <category>postgresql</category>
+        
+        <category>backup</category>
+        
+        
+        <category>database</category>
+        
+      </item>
     
       <item>
         <title>Postgresql com Backup Incremental — parte 3 — Fazendo a limpeza de logs (pg_archivecleanup)</title>
