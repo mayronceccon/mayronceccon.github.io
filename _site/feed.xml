@@ -3,10 +3,10 @@
   <channel>
     <title>Mayron Ceccon</title>
     <description></description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 25 May 2019 18:52:49 -0300</pubDate>
-    <lastBuildDate>Sat, 25 May 2019 18:52:49 -0300</lastBuildDate>
+    <link>http://mayronceccon.github.io/</link>
+    <atom:link href="http://mayronceccon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 25 May 2019 18:53:39 -0300</pubDate>
+    <lastBuildDate>Sat, 25 May 2019 18:53:39 -0300</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -33,8 +33,8 @@ LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
 &lt;p&gt;Em um banco onde se tem muitas transações, sem o devido cuidado com a exclusão dos logs, podemos ficar sem espaço em disco em pouco tempo, por isso é de grande importância esta rotina.&lt;/p&gt;
 </description>
         <pubDate>Thu, 17 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://localhost:4000/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</link>
-        <guid isPermaLink="true">http://localhost:4000/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</guid>
+        <link>http://mayronceccon.github.io/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</guid>
         
         <category>postgresql</category>
         
@@ -61,8 +61,8 @@ LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
 &lt;p&gt;Após a execução e conclusão, você pode verificar que foi criada uma pasta chamada backup a partir do diretório onde você executou o comando e dentro desta o arquivo base.tar.gz.&lt;/p&gt;
 </description>
         <pubDate>Tue, 15 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</link>
-        <guid isPermaLink="true">http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</guid>
+        <link>http://mayronceccon.github.io/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</guid>
         
         <category>postgresql</category>
         
@@ -114,8 +114,8 @@ psql -c &quot;CREATE ROLE user_replication REPLICATION LOGIN PASSWORD '123';&quo
 &lt;p&gt;Agora seu servidor já esta configurado com o Continuous Archiving.&lt;/p&gt;
 </description>
         <pubDate>Thu, 03 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://localhost:4000/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</link>
-        <guid isPermaLink="true">http://localhost:4000/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</guid>
+        <link>http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</guid>
         
         <category>postgresql</category>
         
