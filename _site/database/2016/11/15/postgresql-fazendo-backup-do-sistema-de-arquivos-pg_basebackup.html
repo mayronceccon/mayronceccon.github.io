@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Sobre</title>
-  <meta name="description" content="">
+  <title>Postgresql com Backup Incremental — parte 2 — Fazendo backup do sistema de arquivos (pg_basebackup)</title>
+  <meta name="description" content="Continuando os procedimentos para realizar o Backup Incremental no Postgresql, neste post faremos o backup dos dados do servidor principal, onde este backup ...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://localhost:4000/about/">
+  <link rel="canonical" href="http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html">
   <link rel="alternate" type="application/rss+xml" title="Mayron Ceccon" href="http://localhost:4000/feed.xml" />
 </head>
 
@@ -56,15 +56,23 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Sobre</h1>
+    <h1 class="post-title">Postgresql com Backup Incremental — parte 2 — Fazendo backup do sistema de arquivos (pg_basebackup)</h1>
+    <p class="post-meta">Nov 15, 2016</p>
   </header>
 
   <article class="post-content">
-    <p>This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at <a href="http://jekyllrb.com/">jekyllrb.com</a></p>
+    <p>Continuando os procedimentos para realizar o Backup Incremental no Postgresql, neste post faremos o backup dos dados do servidor principal, onde este backup será usado posteriormente para o restore.</p>
 
-<p>You can find the source code for the Jekyll new theme at: <a href="https://github.com/jglovier/jekyll-new">github.com/jglovier/jekyll-new</a></p>
+<p>No servidor principal, vamos utilizar o comando <a href="https://www.postgresql.org/docs/9.2/app-pgbasebackup.html">pg_basebackup</a>, onde este comando faz o backup do cluster total do servidor principal, não sendo possível fazer o backup de somente um banco específico.</p>
 
-<p>You can find the source code for Jekyll at <a href="https://github.com/jekyll/jekyll">github.com/jekyll/jekyll</a></p>
+<p>Executamos o comando abaixo:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pg_basebackup -h127.0.0.1 -U user_replication -D backup -Ft -z -P
+</code></pre></div></div>
+
+<p>os parâmetros utilizados pode sem verificados no site do <a href="https://www.postgresql.org/docs/9.2/app-pgbasebackup.html">Postgresql</a>.</p>
+
+<p>Após a execução e conclusão, você pode verificar que foi criada uma pasta chamada backup a partir do diretório onde você executou o comando e dentro desta o arquivo base.tar.gz.</p>
 
   </article>
 

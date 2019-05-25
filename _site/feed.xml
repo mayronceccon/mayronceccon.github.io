@@ -3,11 +3,39 @@
   <channel>
     <title>Mayron Ceccon</title>
     <description></description>
-    <link>http://mayronceccon.github.io/</link>
-    <atom:link href="http://mayronceccon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 24 May 2019 14:48:45 -0300</pubDate>
-    <lastBuildDate>Fri, 24 May 2019 14:48:45 -0300</lastBuildDate>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 25 May 2019 18:45:39 -0300</pubDate>
+    <lastBuildDate>Sat, 25 May 2019 18:45:39 -0300</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Postgresql com Backup Incremental — parte 2 — Fazendo backup do sistema de arquivos (pg_basebackup)</title>
+        <description>&lt;p&gt;Continuando os procedimentos para realizar o Backup Incremental no Postgresql, neste post faremos o backup dos dados do servidor principal, onde este backup será usado posteriormente para o restore.&lt;/p&gt;
+
+&lt;p&gt;No servidor principal, vamos utilizar o comando &lt;a href=&quot;https://www.postgresql.org/docs/9.2/app-pgbasebackup.html&quot;&gt;pg_basebackup&lt;/a&gt;, onde este comando faz o backup do cluster total do servidor principal, não sendo possível fazer o backup de somente um banco específico.&lt;/p&gt;
+
+&lt;p&gt;Executamos o comando abaixo:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pg_basebackup -h127.0.0.1 -U user_replication -D backup -Ft -z -P
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;os parâmetros utilizados pode sem verificados no site do &lt;a href=&quot;https://www.postgresql.org/docs/9.2/app-pgbasebackup.html&quot;&gt;Postgresql&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Após a execução e conclusão, você pode verificar que foi criada uma pasta chamada backup a partir do diretório onde você executou o comando e dentro desta o arquivo base.tar.gz.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Nov 2016 08:10:00 -0200</pubDate>
+        <link>http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</link>
+        <guid isPermaLink="true">http://localhost:4000/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</guid>
+        
+        <category>postgresql</category>
+        
+        <category>backup</category>
+        
+        
+        <category>database</category>
+        
+      </item>
     
       <item>
         <title>Postgresql com Backup Incremental — parte 1 — Configurando o registro de Logs (Wal)</title>
@@ -18,45 +46,40 @@
 
 &lt;p&gt;Primeiramente devemos alterar o arquivo &lt;strong&gt;postgresql.conf&lt;/strong&gt;, adicionando os comandos abaixo:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wal_level = hot_standby
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wal_level = hot_standby
 archive_mode = on
 archive_command = 'test ! -f /var/lib/postgresql/pg_log_archive/%f &amp;amp;&amp;amp; cp %p /var/lib/postgresql/pg_log_archive/%f'
 max_wal_senders = 2
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Após as modificações acima, devemos criar a pasta onde os logs serão salvos e dar permissão ao postgres para acesso da pasta.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir /var/lib/postgresql/pg_log_archive 
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir /var/lib/postgresql/pg_log_archive 
 chown -R postgres.postgres /var/lib/postgresql/pg_log_archive
 chmod 700 /var/lib/postgresql/pg_log_archive/
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Agora criaremos um usuário com privilégio de replicação:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;su - postgres
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;su - postgres
 psql -c &quot;CREATE ROLE user_replication REPLICATION LOGIN PASSWORD '123';&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Após a criação do usuário “user_replication” devemos alterar o &lt;strong&gt;pg_hba.conf&lt;/strong&gt;, adicionando a regra abaixo, assim, habilitando e permitindo a conexão para a replicação.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;host replication user_replication 127.0.0.1/32 trust
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;host replication user_replication 127.0.0.1/32 trust
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Após as configurações, devemos fazer o restart do Postgresql.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql restart
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Agora seu servidor já esta configurado com o Continuous Archiving.&lt;/p&gt;
 </description>
         <pubDate>Thu, 03 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</link>
-        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</guid>
+        <link>http://localhost:4000/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</link>
+        <guid isPermaLink="true">http://localhost:4000/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</guid>
         
         <category>postgresql</category>
         
