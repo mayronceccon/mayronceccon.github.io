@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Postgresql com Backup Incremental — parte 4— Restore da base de dados"
 date:   2017-03-03 10:10:00
 categories: [database]

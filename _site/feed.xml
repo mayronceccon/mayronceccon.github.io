@@ -5,8 +5,8 @@
     <description></description>
     <link>http://mayronceccon.github.io/</link>
     <atom:link href="http://mayronceccon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 25 May 2019 19:31:35 -0300</pubDate>
-    <lastBuildDate>Sat, 25 May 2019 19:31:35 -0300</lastBuildDate>
+    <pubDate>Sun, 26 May 2019 20:48:15 -0300</pubDate>
+    <lastBuildDate>Sun, 26 May 2019 20:48:15 -0300</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -63,8 +63,8 @@
 &lt;p&gt;Com isso a rotina de backup e restore incremental esta concluída.&lt;/p&gt;
 </description>
         <pubDate>Fri, 03 Mar 2017 07:10:00 -0300</pubDate>
-        <link>http://mayronceccon.github.io/database/2017/03/03/restore-base-dados.html</link>
-        <guid isPermaLink="true">http://mayronceccon.github.io/database/2017/03/03/restore-base-dados.html</guid>
+        <link>http://mayronceccon.github.io/postgresql-backup-incremental-parte-4-restore-base-dados</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/postgresql-backup-incremental-parte-4-restore-base-dados</guid>
         
         <category>postgresql</category>
         
@@ -99,8 +99,8 @@ LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
 &lt;p&gt;Em um banco onde se tem muitas transações, sem o devido cuidado com a exclusão dos logs, podemos ficar sem espaço em disco em pouco tempo, por isso é de grande importância esta rotina.&lt;/p&gt;
 </description>
         <pubDate>Thu, 17 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://mayronceccon.github.io/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</link>
-        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/17/fazendo-limpeza-logs-pg_archivecleaneup.html</guid>
+        <link>http://mayronceccon.github.io/postgresql-backup-incremental-parte-3-fazendo-limpeza-logs-pg_archivecleaneup</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/postgresql-backup-incremental-parte-3-fazendo-limpeza-logs-pg_archivecleaneup</guid>
         
         <category>postgresql</category>
         
@@ -127,8 +127,8 @@ LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
 &lt;p&gt;Após a execução e conclusão, você pode verificar que foi criada uma pasta chamada backup a partir do diretório onde você executou o comando e dentro desta o arquivo base.tar.gz.&lt;/p&gt;
 </description>
         <pubDate>Tue, 15 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://mayronceccon.github.io/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</link>
-        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/15/postgresql-fazendo-backup-do-sistema-de-arquivos-pg_basebackup.html</guid>
+        <link>http://mayronceccon.github.io/postgresql-backup-incremental-parte-2-fazendo-backup-do-sistema-de-arquivos-pg_basebackup</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/postgresql-backup-incremental-parte-2-fazendo-backup-do-sistema-de-arquivos-pg_basebackup</guid>
         
         <category>postgresql</category>
         
@@ -180,8 +180,8 @@ psql -c &quot;CREATE ROLE user_replication REPLICATION LOGIN PASSWORD '123';&quo
 &lt;p&gt;Agora seu servidor já esta configurado com o Continuous Archiving.&lt;/p&gt;
 </description>
         <pubDate>Thu, 03 Nov 2016 08:10:00 -0200</pubDate>
-        <link>http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</link>
-        <guid isPermaLink="true">http://mayronceccon.github.io/database/2016/11/03/postgresql-com-backup-incremental-parte-1-configurando-registro-de-logs-wal.html</guid>
+        <link>http://mayronceccon.github.io/postgresql-backup-incremental-parte-1-configurando-registro-de-logs-wal</link>
+        <guid isPermaLink="true">http://mayronceccon.github.io/postgresql-backup-incremental-parte-1-configurando-registro-de-logs-wal</guid>
         
         <category>postgresql</category>
         

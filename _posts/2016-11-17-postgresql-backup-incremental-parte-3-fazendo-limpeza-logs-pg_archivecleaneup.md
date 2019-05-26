@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Postgresql com Backup Incremental — parte 3 — Fazendo a limpeza de logs (pg_archivecleanup)"
 date:   2016-11-17 10:10:00
 categories: [database]

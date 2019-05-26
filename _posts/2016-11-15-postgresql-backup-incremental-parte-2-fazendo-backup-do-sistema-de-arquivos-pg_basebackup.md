@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Postgresql com Backup Incremental — parte 2 — Fazendo backup do sistema de arquivos (pg_basebackup)"
 date:   2016-11-15 10:10:00
 categories: [database]

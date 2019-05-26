@@ -7,8 +7,11 @@ url: "http://mayronceccon.github.io" # the base hostname & protocol for your sit
 twitter_username: mayronceccon
 github_username:  mayronceccon
 linkedin_username: mayronceccon
+disqus_shortname: mayronceccon
 
 # Build settings
 #markdown: kramdown
 
 timezone: America/Sao_Paulo
+
+permalink: /:title

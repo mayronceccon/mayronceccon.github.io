@@ -1,5 +1,6 @@
 ---
 layout: post
+comments: true
 title:  "Postgresql com Backup Incremental — parte 1 — Configurando o registro de Logs (Wal)"
 date:   2016-11-03 10:10:00
 categories: [database]
