@@ -12,5 +12,7 @@ layout: default
     {{ content }}
   </article>
   
-  {% include comentarios.html %}
+  {% if site.disqus.shortname %}
+    {% include comentarios.html %}
+  {% endif %}
 </div>

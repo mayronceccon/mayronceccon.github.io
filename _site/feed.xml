@@ -5,8 +5,8 @@
     <description></description>
     <link>http://mayronceccon.github.io/</link>
     <atom:link href="http://mayronceccon.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 26 May 2019 20:49:43 -0300</pubDate>
-    <lastBuildDate>Sun, 26 May 2019 20:49:43 -0300</lastBuildDate>
+    <pubDate>Mon, 27 May 2019 17:02:35 -0300</pubDate>
+    <lastBuildDate>Mon, 27 May 2019 17:02:35 -0300</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -19,25 +19,29 @@
 
 &lt;p&gt;Devemos parar o serviço do Postgresql da máquina onde será feito o restore.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql stop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql stop
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Dentro da pasta &lt;strong&gt;/var/lib/pgsql&lt;/strong&gt; temos a pasta &lt;strong&gt;data&lt;/strong&gt;, esta pasta é onde encontramos os dados referentes ao Postgresql, como vamos fazer o restore do banco de outra máquina, devemos renomear a pasta data para tmp (ou qualquer outro nome)&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mv /var/lib/pgsql/data /var/lib/pgsql/tmp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mv /var/lib/pgsql/data /var/lib/pgsql/tmp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Agora vamos descompactar o arquivo de backup feito no servidor principal. Se as versões do Linux forem as mesmas, a pasta será criada diretamente dentro de /var/lib/pgsql, se atentar onde a pasta data será criada.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tar xvfP /var/lib/pgsql/base.tar.gz
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tar xvfP /var/lib/pgsql/base.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Ao listar as pastas, você verá que foi criada novamente a pasta data, onde está é a cópia do servidor principal.&lt;/p&gt;
 
 &lt;p&gt;Depois desta etapa devemos remover os logs antigos da pasta pg_xlog do arquivo descompactado, para evitar problemas com dados antigos&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rm -rf /var/lib/pgsql/data/pg_xlog/*.*
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rm -rf /var/lib/pgsql/data/pg_xlog/*.*
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;No servidor master “Principal” temos os logs que ainda não foram salvos no arquivo incremental, estes logs estão dentro da pasta pg_xlog. Se não for possível recuperar estes logs, o restore de dados será feito somente a partir do último arquivo incremental.&lt;/p&gt;
 
@@ -45,20 +49,23 @@
 
 &lt;p&gt;Agora devemos criar um arquivo chamado recovery.conf dentro da pasta /var/lib/pgsql/data/, neste arquivo colocaremos a linha abaixo:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;restore_command = 'cp /var/lib/pgsql/pg_log_archive/%f %p'
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;restore_command = 'cp /var/lib/pgsql/pg_log_archive/%f %p'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Onde o caminho &lt;strong&gt;/var/lib/pgsql/pg_log_archive/&lt;/strong&gt; são os logs incrementais que buscamos do servidor principal.&lt;/p&gt;
 
 &lt;p&gt;Devemos também dar permissão ao postgres executar o arquivo&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chown postgres.postgres recovery.conf
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;chown postgres.postgres recovery.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Após estes passos devemos iniciar o Postgresql novamente, para a importação dos logs&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql start
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql start
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Com isso a rotina de backup e restore incremental esta concluída.&lt;/p&gt;
 </description>
@@ -85,10 +92,11 @@
 
 &lt;p&gt;O arquivo bash ficou com as seguintes linhas de comando:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;DIR_LOGS='/var/lib/postgresql/pg_log_archive'
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;DIR_LOGS='/var/lib/postgresql/pg_log_archive'
 LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
 /usr/lib/postgresql/9.3/bin/pg_archivecleanup &quot;${DIR_LOGS}&quot; &quot;${LAST_LOG}&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;onde,&lt;/p&gt;
 
@@ -119,8 +127,9 @@ LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
 
 &lt;p&gt;Executamos o comando abaixo:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pg_basebackup -h127.0.0.1 -U user_replication -D backup -Ft -z -P
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pg_basebackup -h127.0.0.1 -U user_replication -D backup -Ft -z -P
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;os parâmetros utilizados pode sem verificados no site do &lt;a href=&quot;https://www.postgresql.org/docs/9.2/app-pgbasebackup.html&quot;&gt;Postgresql&lt;/a&gt;.&lt;/p&gt;
 
@@ -148,34 +157,39 @@ LAST_LOG=$(cd ${DIR_LOGS} ; ls -rt *.backup | tail -1)
 
 &lt;p&gt;Primeiramente devemos alterar o arquivo &lt;strong&gt;postgresql.conf&lt;/strong&gt;, adicionando os comandos abaixo:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wal_level = hot_standby
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wal_level = hot_standby
 archive_mode = on
 archive_command = 'test ! -f /var/lib/postgresql/pg_log_archive/%f &amp;amp;&amp;amp; cp %p /var/lib/postgresql/pg_log_archive/%f'
 max_wal_senders = 2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Após as modificações acima, devemos criar a pasta onde os logs serão salvos e dar permissão ao postgres para acesso da pasta.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir /var/lib/postgresql/pg_log_archive 
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir /var/lib/postgresql/pg_log_archive 
 chown -R postgres.postgres /var/lib/postgresql/pg_log_archive
 chmod 700 /var/lib/postgresql/pg_log_archive/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Agora criaremos um usuário com privilégio de replicação:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;su - postgres
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;su - postgres
 psql -c &quot;CREATE ROLE user_replication REPLICATION LOGIN PASSWORD '123';&quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Após a criação do usuário “user_replication” devemos alterar o &lt;strong&gt;pg_hba.conf&lt;/strong&gt;, adicionando a regra abaixo, assim, habilitando e permitindo a conexão para a replicação.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;host replication user_replication 127.0.0.1/32 trust
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;host replication user_replication 127.0.0.1/32 trust
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Após as configurações, devemos fazer o restart do Postgresql.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql restart
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/etc/init.d/postgresql restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Agora seu servidor já esta configurado com o Continuous Archiving.&lt;/p&gt;
 </description>
