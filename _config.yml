@@ -7,7 +7,11 @@ url: "http://mayronceccon.github.io" # the base hostname & protocol for your sit
 twitter_username: mayronceccon
 github_username:  mayronceccon
 linkedin_username: mayronceccon
-disqus_shortname: mayronceccon
+
+disqus:
+  # Leave shortname blank to disable comments site-wide.
+  # Disable comments for any post by adding `comments: false` to that post's YAML Front Matter.
+  shortname: mayronceccon
 
 # Build settings
 #markdown: kramdown

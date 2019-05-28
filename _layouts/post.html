@@ -11,4 +11,8 @@ layout: default
   <article class="post-content">
     {{ content }}
   </article>
+  
+  {% if site.disqus.shortname %}
+    {% include comentarios.html %}
+  {% endif %}
 </div>
