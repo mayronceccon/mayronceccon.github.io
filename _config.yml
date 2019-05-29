@@ -8,6 +8,8 @@ twitter_username: mayronceccon
 github_username:  mayronceccon
 linkedin_username: mayronceccon
 
+lang: pt_BR
+
 disqus:
   # Leave shortname blank to disable comments site-wide.
   # Disable comments for any post by adding `comments: false` to that post's YAML Front Matter.
@@ -19,3 +21,11 @@ disqus:
 timezone: America/Sao_Paulo
 
 permalink: /:title
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+twitter:
+  username: mayronceccon
+  card: summary
