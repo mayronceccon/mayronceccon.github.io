@@ -1,23 +1,26 @@
----
-layout: default
----
-
-<div class="home">
-
-  <h1 class="page-heading">Posts</h1>
-
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
-</div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Mayron Thomas Ceccon</title>
+</head>
+<body>
+    <div class="grid">
+        <div class="section">
+            <i class="fas fa-code fa-5x white"></i>
+            <h2>Mayron Thomas Ceccon</h2>
+            <p>Colombo - Paraná - Brasil</p>
+            <a href="mailto:mayron.ceccon@gmail.com"><i class="move fas fa-envelope"></i></a>
+            <a target="__blank" href="https://dev.to/mayronceccon"><i class="move fab fa-dev"></i></a>
+            <a target="__blank" href="https://github.com/mayronceccon"><i class="move fab fa-github"></i></a>
+            <a target="__blank" href="https://www.linkedin.com/in/mayronceccon/"><i class="move fab fa-linkedin-in"></i></a>
+            <a target="__blank" href="https://telegram.me/mayronceccon"><i class="move fab fa-telegram-plane"></i></a>
+            <a target="__blank" href="https://twitter.com/mayronceccon"><i class="move fab fa-twitter"></i></a>
+        </div>
+    </div>
+</body>
+</html>
